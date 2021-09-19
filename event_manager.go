@@ -6,10 +6,10 @@ package vlc
 extern void eventDispatch(libvlc_event_t*, void*);
 
 static inline int eventAttach(libvlc_event_manager_t* em, libvlc_event_type_t et, unsigned long userData) {
-    return libvlc_event_attach(em, et, eventDispatch, (void*)userData);
+    return libvlc_event_attach(em, et, (libvlc_callback_t)eventDispatch, (void*)userData);
 }
-static inline int eventDetach(libvlc_event_manager_t* em, libvlc_event_type_t et, unsigned long userData) {
-    libvlc_event_detach(em, et, eventDispatch, (void*)userData);
+static inline void eventDetach(libvlc_event_manager_t* em, libvlc_event_type_t et, unsigned long userData) {
+    libvlc_event_detach(em, et, (libvlc_callback_t)eventDispatch, (void*)userData);
 }
 */
 import "C"
