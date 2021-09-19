@@ -263,5 +263,19 @@ func main() {
 		}
 		return nil
 	})
+	filepath.Walk("../", func(path string, info os.FileInfo, err error) error {
+		if err == nil && !info.IsDir() && filepath.Ext(path) == ".go" {
+			log.Printf("文件: %s", path)
+			filedata, err := ioutil.ReadFile(path)
+			if err != nil {
+				return err
+			}
+			for name := range names {
+				ioutil.WriteFile(path, []byte(strings.ReplaceAll(string(filedata), fmt.Sprintf("C.%s", name), "")), 0644)
+			}
+
+		}
+		return nil
+	})
 	log.Println(names)
 }
