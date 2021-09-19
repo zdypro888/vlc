@@ -36,7 +36,7 @@ func AudioOutputList() ([]*AudioOutput, error) {
 		return nil, err
 	}
 
-	cOutputs := C.libvlc_audio_output_list_get(inst.handle)
+	cOutputs := C.dynamic_libvlc_audio_output_list_get(inst.handle)
 	if cOutputs == nil {
 		return nil, errOrDefault(getError(), ErrAudioOutputListMissing)
 	}
@@ -49,7 +49,7 @@ func AudioOutputList() ([]*AudioOutput, error) {
 		})
 	}
 
-	C.libvlc_audio_output_list_release(cOutputs)
+	C.dynamic_libvlc_audio_output_list_release(cOutputs)
 	return outputs, getError()
 }
 
@@ -74,7 +74,7 @@ func ListAudioOutputDevices(output string) ([]*AudioOutputDevice, error) {
 
 	cOutput := C.CString(output)
 	defer C.free(unsafe.Pointer(cOutput))
-	return parseAudioOutputDeviceList(C.libvlc_audio_output_device_list_get(inst.handle, cOutput))
+	return parseAudioOutputDeviceList(C.dynamic_libvlc_audio_output_device_list_get(inst.handle, cOutput))
 }
 
 func parseAudioOutputDeviceList(cDevices *C.libvlc_audio_output_device_t) ([]*AudioOutputDevice, error) {
@@ -90,7 +90,7 @@ func parseAudioOutputDeviceList(cDevices *C.libvlc_audio_output_device_t) ([]*Au
 		})
 	}
 
-	C.libvlc_audio_output_device_list_release(cDevices)
+	C.dynamic_libvlc_audio_output_device_list_release(cDevices)
 	return devices, getError()
 }
 
@@ -108,7 +108,7 @@ func ListAudioFilters() ([]*ModuleDescription, error) {
 		return nil, err
 	}
 
-	return parseFilterList(C.libvlc_audio_filter_list_get(inst.handle))
+	return parseFilterList(C.dynamic_libvlc_audio_filter_list_get(inst.handle))
 }
 
 // ListVideoFilters returns the list of available video filters.
@@ -117,7 +117,7 @@ func ListVideoFilters() ([]*ModuleDescription, error) {
 		return nil, err
 	}
 
-	return parseFilterList(C.libvlc_video_filter_list_get(inst.handle))
+	return parseFilterList(C.dynamic_libvlc_video_filter_list_get(inst.handle))
 }
 
 func parseFilterList(cFilters *C.libvlc_module_description_t) ([]*ModuleDescription, error) {
@@ -135,6 +135,6 @@ func parseFilterList(cFilters *C.libvlc_module_description_t) ([]*ModuleDescript
 		})
 	}
 
-	C.libvlc_module_description_list_release(cFilters)
+	C.dynamic_libvlc_module_description_list_release(cFilters)
 	return filters, getError()
 }

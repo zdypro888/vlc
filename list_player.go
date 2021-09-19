@@ -28,7 +28,7 @@ func NewListPlayer() (*ListPlayer, error) {
 		return nil, err
 	}
 
-	player := C.libvlc_media_list_player_new(inst.handle)
+	player := C.dynamic_libvlc_media_list_player_new(inst.handle)
 	if player == nil {
 		return nil, errOrDefault(getError(), ErrListPlayerCreate)
 	}
@@ -50,7 +50,7 @@ func (lp *ListPlayer) Release() error {
 		return nil
 	}
 
-	C.libvlc_media_list_player_release(lp.player)
+	C.dynamic_libvlc_media_list_player_release(lp.player)
 	lp.player = nil
 
 	return getError()
@@ -62,14 +62,14 @@ func (lp *ListPlayer) Player() (*Player, error) {
 		return nil, err
 	}
 
-	player := C.libvlc_media_list_player_get_media_player(lp.player)
+	player := C.dynamic_libvlc_media_list_player_get_media_player(lp.player)
 	if player == nil {
 		return nil, getError()
 	}
 
 	// This call will not release the player. Instead, it will decrement the
 	// reference count increased by libvlc_media_list_player_get_media_player.
-	C.libvlc_media_player_release(player)
+	C.dynamic_libvlc_media_player_release(player)
 
 	return &Player{player: player}, nil
 }
@@ -83,7 +83,7 @@ func (lp *ListPlayer) SetPlayer(player *Player) error {
 		return err
 	}
 
-	C.libvlc_media_list_player_set_media_player(lp.player, player.player)
+	C.dynamic_libvlc_media_list_player_set_media_player(lp.player, player.player)
 	return getError()
 }
 
@@ -96,7 +96,7 @@ func (lp *ListPlayer) Play() error {
 		return nil
 	}
 
-	C.libvlc_media_list_player_play(lp.player)
+	C.dynamic_libvlc_media_list_player_play(lp.player)
 	return getError()
 }
 
@@ -106,7 +106,7 @@ func (lp *ListPlayer) PlayNext() error {
 		return err
 	}
 
-	if C.libvlc_media_list_player_next(lp.player) < 0 {
+	if C.dynamic_libvlc_media_list_player_next(lp.player) < 0 {
 		return getError()
 	}
 
@@ -119,7 +119,7 @@ func (lp *ListPlayer) PlayPrevious() error {
 		return err
 	}
 
-	if C.libvlc_media_list_player_previous(lp.player) < 0 {
+	if C.dynamic_libvlc_media_list_player_previous(lp.player) < 0 {
 		return getError()
 	}
 
@@ -134,7 +134,7 @@ func (lp *ListPlayer) PlayAtIndex(index uint) error {
 	}
 
 	idx := C.int(index)
-	if C.libvlc_media_list_player_play_item_at_index(lp.player, idx) < 0 {
+	if C.dynamic_libvlc_media_list_player_play_item_at_index(lp.player, idx) < 0 {
 		return getError()
 	}
 
@@ -151,7 +151,7 @@ func (lp *ListPlayer) PlayItem(m *Media) error {
 		return err
 	}
 
-	if C.libvlc_media_list_player_play_item(lp.player, m.media) < 0 {
+	if C.dynamic_libvlc_media_list_player_play_item(lp.player, m.media) < 0 {
 		return errOrDefault(getError(), ErrMediaNotFound)
 	}
 
@@ -165,7 +165,7 @@ func (lp *ListPlayer) IsPlaying() bool {
 		return false
 	}
 
-	return bool(C.libvlc_media_list_player_is_playing(lp.player))
+	return bool(C.dynamic_libvlc_media_list_player_is_playing(lp.player))
 }
 
 // Stop cancels the currently playing media list, if there is one.
@@ -174,7 +174,7 @@ func (lp *ListPlayer) Stop() error {
 		return err
 	}
 
-	C.libvlc_media_list_player_stop_async(lp.player)
+	C.dynamic_libvlc_media_list_player_stop_async(lp.player)
 	return getError()
 }
 
@@ -185,7 +185,7 @@ func (lp *ListPlayer) SetPause(pause bool) error {
 		return err
 	}
 
-	C.libvlc_media_list_player_set_pause(lp.player, C.int(boolToInt(pause)))
+	C.dynamic_libvlc_media_list_player_set_pause(lp.player, C.int(boolToInt(pause)))
 	return getError()
 }
 
@@ -196,7 +196,7 @@ func (lp *ListPlayer) TogglePause() error {
 		return err
 	}
 
-	C.libvlc_media_list_player_pause(lp.player)
+	C.dynamic_libvlc_media_list_player_pause(lp.player)
 	return getError()
 }
 
@@ -208,7 +208,7 @@ func (lp *ListPlayer) SetPlaybackMode(mode PlaybackMode) error {
 	}
 
 	m := C.libvlc_playback_mode_t(mode)
-	C.libvlc_media_list_player_set_playback_mode(lp.player, m)
+	C.dynamic_libvlc_media_list_player_set_playback_mode(lp.player, m)
 	return getError()
 }
 
@@ -218,7 +218,7 @@ func (lp *ListPlayer) MediaState() (MediaState, error) {
 		return 0, err
 	}
 
-	state := int(C.libvlc_media_list_player_get_state(lp.player))
+	state := int(C.dynamic_libvlc_media_list_player_get_state(lp.player))
 	return MediaState(state), getError()
 }
 
@@ -237,7 +237,7 @@ func (lp *ListPlayer) SetMediaList(ml *MediaList) error {
 	}
 
 	lp.list = ml
-	C.libvlc_media_list_player_set_media_list(lp.player, ml.list)
+	C.dynamic_libvlc_media_list_player_set_media_list(lp.player, ml.list)
 
 	return getError()
 }
@@ -248,7 +248,7 @@ func (lp *ListPlayer) EventManager() (*EventManager, error) {
 		return nil, err
 	}
 
-	manager := C.libvlc_media_list_player_event_manager(lp.player)
+	manager := C.dynamic_libvlc_media_list_player_event_manager(lp.player)
 	if manager == nil {
 		return nil, ErrMissingEventManager
 	}

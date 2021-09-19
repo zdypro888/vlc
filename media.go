@@ -245,7 +245,7 @@ func NewMediaFromReadSeeker(r io.ReadSeeker) (*Media, error) {
 
 	// Create media.
 	readerID := inst.objects.add(r)
-	cMedia := C.libvlc_media_new_callbacks(
+	cMedia := C.dynamic_libvlc_media_new_callbacks(
 		inst.handle,
 		C.media_open_cb_wrapper(),
 		C.media_read_cb_wrapper(),
@@ -331,7 +331,7 @@ func (m *Media) Duplicate() (*Media, error) {
 	}
 
 	// Duplicate media.
-	cMedia := C.libvlc_media_duplicate(m.media)
+	cMedia := C.dynamic_libvlc_media_duplicate(m.media)
 	if cMedia == nil {
 		return nil, errOrDefault(getError(), ErrMediaCreate)
 	}
@@ -370,7 +370,7 @@ func (m *Media) Type() (MediaType, error) {
 		return 0, err
 	}
 
-	return MediaType(C.libvlc_media_get_type(m.media)), getError()
+	return MediaType(C.dynamic_libvlc_media_get_type(m.media)), getError()
 }
 
 // State returns the current state of the media instance.
@@ -379,7 +379,7 @@ func (m *Media) State() (MediaState, error) {
 		return 0, err
 	}
 
-	return MediaState(C.libvlc_media_get_state(m.media)), getError()
+	return MediaState(C.dynamic_libvlc_media_get_state(m.media)), getError()
 }
 
 // Stats returns playback statistics for the media.
@@ -389,7 +389,7 @@ func (m *Media) Stats() (*MediaStats, error) {
 	}
 
 	var stats C.libvlc_media_stats_t
-	if !C.libvlc_media_get_stats(m.media, &stats) {
+	if !C.dynamic_libvlc_media_get_stats(m.media, &stats) {
 		return nil, errOrDefault(getError(), ErrMissingMediaStats)
 	}
 
@@ -403,7 +403,7 @@ func (m *Media) Location() (string, error) {
 		return "", err
 	}
 
-	mrl := C.libvlc_media_get_mrl(m.media)
+	mrl := C.dynamic_libvlc_media_get_mrl(m.media)
 	if mrl == nil {
 		return "", ErrMissingMediaLocation
 	}
@@ -420,7 +420,7 @@ func (m *Media) Duration() (time.Duration, error) {
 		return 0, err
 	}
 
-	duration := C.libvlc_media_get_duration(m.media)
+	duration := C.dynamic_libvlc_media_get_duration(m.media)
 	return time.Duration(duration) * time.Millisecond, getError()
 }
 
@@ -433,7 +433,7 @@ func (m *Media) Meta(key MediaMetaKey) (string, error) {
 		return "", err
 	}
 
-	val := C.libvlc_media_get_meta(m.media, C.libvlc_meta_t(key))
+	val := C.dynamic_libvlc_media_get_meta(m.media, C.libvlc_meta_t(key))
 	if val == nil {
 		return "", nil
 	}
@@ -453,7 +453,7 @@ func (m *Media) SetMeta(key MediaMetaKey, val string) error {
 	}
 
 	cVal := C.CString(val)
-	C.libvlc_media_set_meta(m.media, C.libvlc_meta_t(key), cVal)
+	C.dynamic_libvlc_media_set_meta(m.media, C.libvlc_meta_t(key), cVal)
 	C.free(unsafe.Pointer(cVal))
 	return nil
 }
@@ -464,7 +464,7 @@ func (m *Media) SaveMeta() error {
 		return err
 	}
 
-	if int(C.libvlc_media_save_meta(m.media)) != 1 {
+	if int(C.dynamic_libvlc_media_save_meta(m.media)) != 1 {
 		return errOrDefault(getError(), ErrMediaMetaSave)
 	}
 
@@ -498,7 +498,7 @@ func (m *Media) ParseWithOptions(timeout int, opts ...MediaParseOption) error {
 		timeout = -1
 	}
 
-	if int(C.libvlc_media_parse_with_options(m.media,
+	if int(C.dynamic_libvlc_media_parse_with_options(m.media,
 		C.libvlc_media_parse_flag_t(flags), C.int(timeout))) != 0 {
 		return errOrDefault(getError(), ErrMediaParse)
 	}
@@ -513,7 +513,7 @@ func (m *Media) Parse() error {
 		return err
 	}
 
-	C.libvlc_media_parse(m.media)
+	C.dynamic_libvlc_media_parse(m.media)
 	return getError()
 }
 
@@ -527,7 +527,7 @@ func (m *Media) ParseAsync() error {
 		return err
 	}
 
-	C.libvlc_media_parse_async(m.media)
+	C.dynamic_libvlc_media_parse_async(m.media)
 	return getError()
 }
 
@@ -539,7 +539,7 @@ func (m *Media) StopParse() error {
 		return err
 	}
 
-	C.libvlc_media_parse_stop(m.media)
+	C.dynamic_libvlc_media_parse_stop(m.media)
 	return getError()
 }
 
@@ -549,7 +549,7 @@ func (m *Media) ParseStatus() (MediaParseStatus, error) {
 		return MediaParseUnstarted, err
 	}
 
-	return MediaParseStatus(C.libvlc_media_get_parsed_status(m.media)), getError()
+	return MediaParseStatus(C.dynamic_libvlc_media_get_parsed_status(m.media)), getError()
 }
 
 // IsParsed returns true if the media was parsed.
@@ -559,7 +559,7 @@ func (m *Media) IsParsed() (bool, error) {
 		return false, err
 	}
 
-	return bool(C.libvlc_media_is_parsed(m.media)), getError()
+	return bool(C.dynamic_libvlc_media_is_parsed(m.media)), getError()
 }
 
 // SubItems returns a media list containing the sub-items of the current
@@ -573,7 +573,7 @@ func (m *Media) SubItems() (*MediaList, error) {
 	}
 
 	var subitems *C.libvlc_media_list_t
-	if subitems = C.libvlc_media_subitems(m.media); subitems == nil {
+	if subitems = C.dynamic_libvlc_media_subitems(m.media); subitems == nil {
 		return nil, errOrDefault(getError(), ErrMediaListNotFound)
 	}
 
@@ -591,11 +591,11 @@ func (m *Media) Tracks() ([]*MediaTrack, error) {
 	// Get media tracks.
 	var cTracks **C.libvlc_media_track_t
 
-	count := int(C.libvlc_media_tracks_get(m.media, &cTracks))
+	count := int(C.dynamic_libvlc_media_tracks_get(m.media, &cTracks))
 	if count <= 0 || cTracks == nil {
 		return nil, nil
 	}
-	defer C.libvlc_media_tracks_release(cTracks, C.uint(count))
+	defer C.dynamic_libvlc_media_tracks_release(cTracks, C.uint(count))
 
 	// Parse media tracks.
 	tracks := make([]*MediaTrack, 0, count)
@@ -658,7 +658,7 @@ func (m *Media) EventManager() (*EventManager, error) {
 		return nil, err
 	}
 
-	manager := C.libvlc_media_event_manager(m.media)
+	manager := C.dynamic_libvlc_media_event_manager(m.media)
 	if manager == nil {
 		return nil, ErrMissingEventManager
 	}
@@ -674,7 +674,7 @@ func (m *Media) addOption(option string) error {
 	cOption := C.CString(option)
 	defer C.free(unsafe.Pointer(cOption))
 
-	C.libvlc_media_add_option(m.media, cOption)
+	C.dynamic_libvlc_media_add_option(m.media, cOption)
 	return getError()
 }
 
@@ -682,7 +682,7 @@ func (m *Media) getUserData() (objectID, *mediaData) {
 	if err := inst.assertInit(); err != nil {
 		return nil, nil
 	}
-	id := C.libvlc_media_get_user_data(m.media)
+	id := C.dynamic_libvlc_media_get_user_data(m.media)
 
 	obj, ok := inst.objects.get(id)
 	if !ok {
@@ -699,7 +699,7 @@ func (m *Media) getUserData() (objectID, *mediaData) {
 
 func (m *Media) setUserData(data *mediaData) objectID {
 	id := inst.objects.add(data)
-	C.libvlc_media_set_user_data(m.media, id)
+	C.dynamic_libvlc_media_set_user_data(m.media, id)
 	return id
 }
 
@@ -718,7 +718,7 @@ func (m *Media) release() {
 	m.deleteUserData()
 
 	// Delete media.
-	C.libvlc_media_release(m.media)
+	C.dynamic_libvlc_media_release(m.media)
 	m.media = nil
 }
 
@@ -744,9 +744,9 @@ func newMedia(path string, local bool) (*Media, error) {
 			return nil, err
 		}
 
-		media = C.libvlc_media_new_path(inst.handle, cPath)
+		media = C.dynamic_libvlc_media_new_path(inst.handle, cPath)
 	} else {
-		media = C.libvlc_media_new_location(inst.handle, cPath)
+		media = C.dynamic_libvlc_media_new_location(inst.handle, cPath)
 	}
 
 	if media == nil {

@@ -5,7 +5,7 @@ import "C"
 
 // EqualizerPresetCount returns the number of available equalizer presets.
 func EqualizerPresetCount() uint {
-	return uint(C.libvlc_audio_equalizer_get_preset_count())
+	return uint(C.dynamic_libvlc_audio_equalizer_get_preset_count())
 }
 
 // EqualizerPresetName returns the name of the equalizer preset with the
@@ -13,7 +13,7 @@ func EqualizerPresetCount() uint {
 // and less than EqualizerPresetCount(). The function returns an empty string
 // for invalid indices.
 func EqualizerPresetName(index uint) string {
-	return C.GoString(C.libvlc_audio_equalizer_get_preset_name(C.uint(index)))
+	return C.GoString(C.dynamic_libvlc_audio_equalizer_get_preset_name(C.uint(index)))
 }
 
 // EqualizerPresetNames returns the names of all available equalizer presets,
@@ -33,14 +33,14 @@ func EqualizerPresetNames() []string {
 
 // EqualizerBandCount returns the number of distinct equalizer frequency bands.
 func EqualizerBandCount() uint {
-	return uint(C.libvlc_audio_equalizer_get_band_count())
+	return uint(C.dynamic_libvlc_audio_equalizer_get_band_count())
 }
 
 // EqualizerBandFrequency returns the frequency of the equalizer band with the
 // specified index. The index must be a number greater than or equal to 0 and
 // less than EqualizerBandCount(). The function returns -1 for invalid indices.
 func EqualizerBandFrequency(index uint) float64 {
-	return float64(C.libvlc_audio_equalizer_get_band_frequency(C.uint(index)))
+	return float64(C.dynamic_libvlc_audio_equalizer_get_band_frequency(C.uint(index)))
 }
 
 // EqualizerBandFrequencies returns the frequencies of all available equalizer
@@ -66,7 +66,7 @@ type Equalizer struct {
 
 // NewEqualizer returns a new equalizer with all frequency values set to zero.
 func NewEqualizer() (*Equalizer, error) {
-	equalizer := C.libvlc_audio_equalizer_new()
+	equalizer := C.dynamic_libvlc_audio_equalizer_new()
 	if equalizer == nil {
 		return nil, errOrDefault(getError(), ErrEqualizerCreate)
 	}
@@ -78,7 +78,7 @@ func NewEqualizer() (*Equalizer, error) {
 // copied from the preset with the specified index. The index must be a number
 // greater than or equal to 0 and less than EqualizerPresetCount().
 func NewEqualizerFromPreset(index uint) (*Equalizer, error) {
-	equalizer := C.libvlc_audio_equalizer_new_from_preset(C.uint(index))
+	equalizer := C.dynamic_libvlc_audio_equalizer_new_from_preset(C.uint(index))
 	if equalizer == nil {
 		return nil, errOrDefault(getError(), ErrEqualizerCreate)
 	}
@@ -92,7 +92,7 @@ func (e *Equalizer) Release() error {
 		return nil
 	}
 
-	C.libvlc_audio_equalizer_release(e.equalizer)
+	C.dynamic_libvlc_audio_equalizer_release(e.equalizer)
 	e.equalizer = nil
 
 	return getError()
@@ -104,7 +104,7 @@ func (e *Equalizer) PreampValue() (float64, error) {
 		return 0, err
 	}
 
-	value := C.libvlc_audio_equalizer_get_preamp(e.equalizer)
+	value := C.dynamic_libvlc_audio_equalizer_get_preamp(e.equalizer)
 	return float64(value), getError()
 }
 
@@ -115,7 +115,7 @@ func (e *Equalizer) SetPreampValue(value float64) error {
 		return err
 	}
 
-	if C.libvlc_audio_equalizer_set_preamp(e.equalizer, C.float(value)) != 0 {
+	if C.dynamic_libvlc_audio_equalizer_set_preamp(e.equalizer, C.float(value)) != 0 {
 		return errOrDefault(getError(), ErrEqualizerAmpValueSet)
 	}
 
@@ -130,7 +130,7 @@ func (e *Equalizer) AmpValueAtIndex(index uint) (float64, error) {
 		return 0, err
 	}
 
-	value := C.libvlc_audio_equalizer_get_amp_at_index(e.equalizer, C.uint(index))
+	value := C.dynamic_libvlc_audio_equalizer_get_amp_at_index(e.equalizer, C.uint(index))
 	return float64(value), getError()
 }
 
@@ -142,7 +142,7 @@ func (e *Equalizer) SetAmpValueAtIndex(value float64, index uint) error {
 		return err
 	}
 
-	if C.libvlc_audio_equalizer_set_amp_at_index(e.equalizer, C.float(value), C.uint(index)) != 0 {
+	if C.dynamic_libvlc_audio_equalizer_set_amp_at_index(e.equalizer, C.float(value), C.uint(index)) != 0 {
 		return errOrDefault(getError(), ErrEqualizerAmpValueSet)
 	}
 
