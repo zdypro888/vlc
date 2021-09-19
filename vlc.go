@@ -45,7 +45,7 @@ func Init(args ...string) error {
 		}
 	}()
 
-	handle := C.libvlc_new(C.int(argc), *(***C.char)(unsafe.Pointer(&argv)))
+	handle := C.dynamic_libvlc_new(C.int(argc), *(***C.char)(unsafe.Pointer(&argv)))
 	if handle == nil {
 		return errOrDefault(getError(), ErrModuleInitialize)
 	}
@@ -65,7 +65,7 @@ func Release() error {
 		return nil
 	}
 
-	C.libvlc_release(inst.handle)
+	C.dynamic_libvlc_release(inst.handle)
 	inst = nil
 
 	return getError()
@@ -84,7 +84,7 @@ func SetAppName(name, userAgent string) error {
 	}
 
 	cName, cUserAgent := C.CString(name), C.CString(userAgent)
-	C.libvlc_set_user_agent(inst.handle, cName, cUserAgent)
+	C.dynamic_libvlc_set_user_agent(inst.handle, cName, cUserAgent)
 
 	C.free(unsafe.Pointer(cName))
 	C.free(unsafe.Pointer(cUserAgent))
@@ -98,7 +98,7 @@ func SetAppID(id, version, icon string) error {
 	}
 
 	cID, cVersion, cIcon := C.CString(id), C.CString(version), C.CString(icon)
-	C.libvlc_set_app_id(inst.handle, cID, cVersion, cIcon)
+	C.dynamic_libvlc_set_app_id(inst.handle, cID, cVersion, cIcon)
 
 	C.free(unsafe.Pointer(cID))
 	C.free(unsafe.Pointer(cVersion))
@@ -117,7 +117,7 @@ func StartUserInterface(name string) error {
 	cName := C.CString(name)
 	defer C.free(unsafe.Pointer(cName))
 
-	if C.libvlc_add_intf(inst.handle, cName) < 0 {
+	if C.dynamic_libvlc_add_intf(inst.handle, cName) < 0 {
 		return errOrDefault(getError(), ErrUserInterfaceStart)
 	}
 

@@ -56,11 +56,11 @@ func ListMediaDiscoverers(category MediaDiscoveryCategory) ([]*MediaDiscovererDe
 	// Get media discoverer descriptors.
 	var cDescriptors **C.libvlc_media_discoverer_description_t
 
-	count := int(C.libvlc_media_discoverer_list_get(inst.handle, C.libvlc_media_discoverer_category_t(category), &cDescriptors))
+	count := int(C.dynamic_libvlc_media_discoverer_list_get(inst.handle, C.libvlc_media_discoverer_category_t(category), &cDescriptors))
 	if count <= 0 || cDescriptors == nil {
 		return nil, nil
 	}
-	defer C.libvlc_media_discoverer_list_release(cDescriptors, C.size_t(count))
+	defer C.dynamic_libvlc_media_discoverer_list_release(cDescriptors, C.size_t(count))
 
 	// Parse media discoverer descriptors.
 	descriptors := make([]*MediaDiscovererDescriptor, 0, count)
@@ -109,7 +109,7 @@ func NewMediaDiscoverer(name string) (*MediaDiscoverer, error) {
 	cName := C.CString(name)
 	defer C.free(unsafe.Pointer(cName))
 
-	discoverer := C.libvlc_media_discoverer_new(inst.handle, cName)
+	discoverer := C.dynamic_libvlc_media_discoverer_new(inst.handle, cName)
 	if discoverer == nil {
 		return nil, errOrDefault(getError(), ErrMediaDiscovererCreate)
 	}
@@ -130,7 +130,7 @@ func (md *MediaDiscoverer) Release() error {
 	md.stop()
 
 	// Release discovery service.
-	C.libvlc_media_discoverer_release(md.discoverer)
+	C.dynamic_libvlc_media_discoverer_release(md.discoverer)
 	md.discoverer = nil
 
 	return getError()
@@ -217,7 +217,7 @@ func (md *MediaDiscoverer) Start(cb MediaDiscoveryCallback) error {
 	}()
 
 	// Start discovery service.
-	if C.libvlc_media_discoverer_start(md.discoverer) < 0 {
+	if C.dynamic_libvlc_media_discoverer_start(md.discoverer) < 0 {
 		return errOrDefault(getError(), ErrMediaDiscovererStart)
 	}
 
@@ -226,7 +226,7 @@ func (md *MediaDiscoverer) Start(cb MediaDiscoveryCallback) error {
 		manager.Detach(eventIDs...)
 
 		// Stop discovery service.
-		C.libvlc_media_discoverer_stop(md.discoverer)
+		C.dynamic_libvlc_media_discoverer_stop(md.discoverer)
 	}
 
 	return nil
@@ -248,7 +248,7 @@ func (md *MediaDiscoverer) IsRunning() bool {
 		return false
 	}
 
-	return bool(C.libvlc_media_discoverer_is_running(md.discoverer))
+	return bool(C.dynamic_libvlc_media_discoverer_is_running(md.discoverer))
 }
 
 // MediaList returns the media list associated with the discovery service,
@@ -259,14 +259,14 @@ func (md *MediaDiscoverer) MediaList() (*MediaList, error) {
 		return nil, err
 	}
 
-	ml := C.libvlc_media_discoverer_media_list(md.discoverer)
+	ml := C.dynamic_libvlc_media_discoverer_media_list(md.discoverer)
 	if ml == nil {
 		return nil, errOrDefault(getError(), ErrMediaListNotFound)
 	}
 
 	// This call will not release the media list. Instead, it will decrement
 	// the reference count increased by libvlc_media_discoverer_media_list.
-	C.libvlc_media_list_release(ml)
+	C.dynamic_libvlc_media_list_release(ml)
 
 	return &MediaList{list: ml}, nil
 }

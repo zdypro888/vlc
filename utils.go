@@ -12,13 +12,13 @@ import (
 )
 
 func getError() error {
-	msg := C.libvlc_errmsg()
+	msg := C.dynamic_libvlc_errmsg()
 	if msg == nil {
 		return nil
 	}
 
 	err := errors.New(C.GoString(msg))
-	C.libvlc_clearerr()
+	C.dynamic_libvlc_clearerr()
 	return err
 }
 

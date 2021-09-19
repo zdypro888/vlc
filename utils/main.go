@@ -552,7 +552,7 @@ func main() {
 			}
 			filesource := string(filedata)
 			for _, name := range names {
-				filesource = strings.ReplaceAll(filesource, fmt.Sprintf("C.%s", name), fmt.Sprintf("C.dynamic_%s", name))
+				filesource = strings.ReplaceAll(filesource, fmt.Sprintf("C.%s(", name), fmt.Sprintf("C.dynamic_%s(", name))
 			}
 			ioutil.WriteFile(path, []byte(filesource), 0644)
 		}

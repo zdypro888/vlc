@@ -28,7 +28,7 @@ func (r *Renderer) Name() (string, error) {
 		return "", nil
 	}
 
-	return C.GoString(C.libvlc_renderer_item_name(r.renderer)), nil
+	return C.GoString(C.dynamic_libvlc_renderer_item_name(r.renderer)), nil
 }
 
 // Type returns the type of the renderer.
@@ -37,7 +37,7 @@ func (r *Renderer) Type() (RendererType, error) {
 		return "", nil
 	}
 
-	return RendererType(C.GoString(C.libvlc_renderer_item_type(r.renderer))), nil
+	return RendererType(C.GoString(C.dynamic_libvlc_renderer_item_type(r.renderer))), nil
 }
 
 // Flags returns the flags of the renderer.
@@ -46,7 +46,7 @@ func (r *Renderer) Flags() (*RendererFlags, error) {
 		return nil, err
 	}
 
-	flags := C.libvlc_renderer_item_flags(r.renderer)
+	flags := C.dynamic_libvlc_renderer_item_flags(r.renderer)
 
 	return &RendererFlags{
 		AudioEnabled: (flags | C.LIBVLC_RENDERER_CAN_AUDIO) != 0,
@@ -60,7 +60,7 @@ func (r *Renderer) IconURI() (string, error) {
 		return "", nil
 	}
 
-	return C.GoString(C.libvlc_renderer_item_icon_uri(r.renderer)), nil
+	return C.GoString(C.dynamic_libvlc_renderer_item_icon_uri(r.renderer)), nil
 }
 
 func (r *Renderer) hold() {
@@ -68,7 +68,7 @@ func (r *Renderer) hold() {
 		return
 	}
 
-	C.libvlc_renderer_item_hold(r.renderer)
+	C.dynamic_libvlc_renderer_item_hold(r.renderer)
 }
 
 func (r *Renderer) release() {
@@ -76,7 +76,7 @@ func (r *Renderer) release() {
 		return
 	}
 
-	C.libvlc_renderer_item_release(r.renderer)
+	C.dynamic_libvlc_renderer_item_release(r.renderer)
 }
 
 func (r *Renderer) assertInit() error {

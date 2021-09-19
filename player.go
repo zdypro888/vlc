@@ -57,7 +57,7 @@ func NewPlayer() (*Player, error) {
 		return nil, err
 	}
 
-	player := C.libvlc_media_player_new(inst.handle)
+	player := C.dynamic_libvlc_media_player_new(inst.handle)
 	if player == nil {
 		return nil, errOrDefault(getError(), ErrPlayerCreate)
 	}
@@ -71,7 +71,7 @@ func (p *Player) Release() error {
 		return nil
 	}
 
-	C.libvlc_media_player_release(p.player)
+	C.dynamic_libvlc_media_player_release(p.player)
 	p.player = nil
 
 	return getError()
@@ -86,7 +86,7 @@ func (p *Player) Play() error {
 		return nil
 	}
 
-	if C.libvlc_media_player_play(p.player) < 0 {
+	if C.dynamic_libvlc_media_player_play(p.player) < 0 {
 		return getError()
 	}
 
@@ -100,7 +100,7 @@ func (p *Player) IsPlaying() bool {
 		return false
 	}
 
-	return bool(C.libvlc_media_player_is_playing(p.player))
+	return bool(C.dynamic_libvlc_media_player_is_playing(p.player))
 }
 
 // Stop cancels the currently playing media, if there is one.
@@ -109,7 +109,7 @@ func (p *Player) Stop() error {
 		return err
 	}
 
-	C.libvlc_media_player_stop_async(p.player)
+	C.dynamic_libvlc_media_player_stop_async(p.player)
 	return getError()
 }
 
@@ -120,7 +120,7 @@ func (p *Player) SetPause(pause bool) error {
 		return err
 	}
 
-	C.libvlc_media_player_set_pause(p.player, C.int(boolToInt(pause)))
+	C.dynamic_libvlc_media_player_set_pause(p.player, C.int(boolToInt(pause)))
 	return getError()
 }
 
@@ -131,7 +131,7 @@ func (p *Player) TogglePause() error {
 		return err
 	}
 
-	C.libvlc_media_player_pause(p.player)
+	C.dynamic_libvlc_media_player_pause(p.player)
 	return getError()
 }
 
@@ -141,7 +141,7 @@ func (p *Player) CanPause() bool {
 		return false
 	}
 
-	return bool(C.libvlc_media_player_can_pause(p.player))
+	return bool(C.dynamic_libvlc_media_player_can_pause(p.player))
 }
 
 // IsSeekable returns true if the current media is seekable.
@@ -150,7 +150,7 @@ func (p *Player) IsSeekable() bool {
 		return false
 	}
 
-	return bool(C.libvlc_media_player_is_seekable(p.player))
+	return bool(C.dynamic_libvlc_media_player_is_seekable(p.player))
 }
 
 // VideoOutputCount returns the number of video outputs the media player has.
@@ -159,7 +159,7 @@ func (p *Player) VideoOutputCount() int {
 		return 0
 	}
 
-	return int(C.libvlc_media_player_has_vout(p.player))
+	return int(C.dynamic_libvlc_media_player_has_vout(p.player))
 }
 
 // IsScrambled returns true if the media player is in a scrambled state.
@@ -168,7 +168,7 @@ func (p *Player) IsScrambled() bool {
 		return false
 	}
 
-	return bool(C.libvlc_media_player_program_scrambled(p.player))
+	return bool(C.dynamic_libvlc_media_player_program_scrambled(p.player))
 }
 
 // PlaybackRate returns the playback rate of the media player.
@@ -179,7 +179,7 @@ func (p *Player) PlaybackRate() float32 {
 		return 0
 	}
 
-	return float32(C.libvlc_media_player_get_rate(p.player))
+	return float32(C.dynamic_libvlc_media_player_get_rate(p.player))
 }
 
 // SetPlaybackRate sets the playback rate of the media player.
@@ -190,7 +190,7 @@ func (p *Player) SetPlaybackRate(rate float32) error {
 		return err
 	}
 
-	C.libvlc_media_player_set_rate(p.player, C.float(rate))
+	C.dynamic_libvlc_media_player_set_rate(p.player, C.float(rate))
 	return getError()
 }
 
@@ -201,7 +201,7 @@ func (p *Player) SetFullScreen(fullscreen bool) error {
 		return err
 	}
 
-	C.libvlc_set_fullscreen(p.player, C.bool(fullscreen))
+	C.dynamic_libvlc_set_fullscreen(p.player, C.bool(fullscreen))
 	return getError()
 }
 
@@ -212,7 +212,7 @@ func (p *Player) ToggleFullScreen() error {
 		return err
 	}
 
-	C.libvlc_toggle_fullscreen(p.player)
+	C.dynamic_libvlc_toggle_fullscreen(p.player)
 	return getError()
 }
 
@@ -222,7 +222,7 @@ func (p *Player) IsFullScreen() (bool, error) {
 		return false, err
 	}
 
-	return bool(C.libvlc_get_fullscreen(p.player)), getError()
+	return bool(C.dynamic_libvlc_get_fullscreen(p.player)), getError()
 }
 
 // Volume returns the volume of the player.
@@ -231,7 +231,7 @@ func (p *Player) Volume() (int, error) {
 		return 0, err
 	}
 
-	return int(C.libvlc_audio_get_volume(p.player)), getError()
+	return int(C.dynamic_libvlc_audio_get_volume(p.player)), getError()
 }
 
 // SetVolume sets the volume of the player.
@@ -240,7 +240,7 @@ func (p *Player) SetVolume(volume int) error {
 		return err
 	}
 
-	C.libvlc_audio_set_volume(p.player, C.int(volume))
+	C.dynamic_libvlc_audio_set_volume(p.player, C.int(volume))
 	return getError()
 }
 
@@ -251,7 +251,7 @@ func (p *Player) IsMuted() (bool, error) {
 		return false, err
 	}
 
-	return C.libvlc_audio_get_mute(p.player) > C.int(0), getError()
+	return C.dynamic_libvlc_audio_get_mute(p.player) > C.int(0), getError()
 }
 
 // SetMute mutes or unmutes the audio output of the player.
@@ -263,7 +263,7 @@ func (p *Player) SetMute(mute bool) error {
 		return err
 	}
 
-	C.libvlc_audio_set_mute(p.player, C.int(boolToInt(mute)))
+	C.dynamic_libvlc_audio_set_mute(p.player, C.int(boolToInt(mute)))
 	return getError()
 }
 
@@ -277,7 +277,7 @@ func (p *Player) ToggleMute() error {
 		return err
 	}
 
-	C.libvlc_audio_toggle_mute(p.player)
+	C.dynamic_libvlc_audio_toggle_mute(p.player)
 	return getError()
 }
 
@@ -287,14 +287,14 @@ func (p *Player) Media() (*Media, error) {
 		return nil, err
 	}
 
-	media := C.libvlc_media_player_get_media(p.player)
+	media := C.dynamic_libvlc_media_player_get_media(p.player)
 	if media == nil {
 		return nil, nil
 	}
 
 	// This call will not release the media. Instead, it will decrement
 	// the reference count increased by libvlc_media_player_get_media.
-	C.libvlc_media_release(media)
+	C.dynamic_libvlc_media_release(media)
 
 	return &Media{media}, nil
 }
@@ -343,7 +343,7 @@ func (p *Player) SetAudioOutput(output string) error {
 	cOutput := C.CString(output)
 	defer C.free(unsafe.Pointer(cOutput))
 
-	if C.libvlc_audio_output_set(p.player, cOutput) != 0 {
+	if C.dynamic_libvlc_audio_output_set(p.player, cOutput) != 0 {
 		return errOrDefault(getError(), ErrAudioOutputSet)
 	}
 
@@ -361,7 +361,7 @@ func (p *Player) AudioOutputDevices() ([]*AudioOutputDevice, error) {
 		return nil, err
 	}
 
-	return parseAudioOutputDeviceList(C.libvlc_audio_output_device_enum(p.player))
+	return parseAudioOutputDeviceList(C.dynamic_libvlc_audio_output_device_enum(p.player))
 }
 
 // AudioOutputDevice returns the name of the current audio output device
@@ -377,7 +377,7 @@ func (p *Player) AudioOutputDevice() (string, error) {
 		return "", err
 	}
 
-	cName := C.libvlc_audio_output_device_get(p.player)
+	cName := C.dynamic_libvlc_audio_output_device_get(p.player)
 	if cName == nil {
 		return "", ErrAudioOutputDeviceMissing
 	}
@@ -410,7 +410,7 @@ func (p *Player) SetAudioOutputDevice(device, output string) error {
 	cDevice := C.CString(device)
 	defer C.free(unsafe.Pointer(cDevice))
 
-	C.libvlc_audio_output_device_set(p.player, cOutput, cDevice)
+	C.dynamic_libvlc_audio_output_device_set(p.player, cOutput, cDevice)
 	return getError()
 }
 
@@ -420,7 +420,7 @@ func (p *Player) StereoMode() (StereoMode, error) {
 		return StereoModeError, err
 	}
 
-	return StereoMode(C.libvlc_audio_get_channel(p.player)), getError()
+	return StereoMode(C.dynamic_libvlc_audio_get_channel(p.player)), getError()
 }
 
 // SetStereoMode sets the stereo mode of the audio output used by the player.
@@ -430,7 +430,7 @@ func (p *Player) SetStereoMode(mode StereoMode) error {
 		return err
 	}
 
-	if C.libvlc_audio_set_channel(p.player, C.int(mode)) != 0 {
+	if C.dynamic_libvlc_audio_set_channel(p.player, C.int(mode)) != 0 {
 		return errOrDefault(getError(), ErrStereoModeSet)
 	}
 
@@ -443,7 +443,7 @@ func (p *Player) MediaLength() (int, error) {
 		return 0, err
 	}
 
-	return int(C.libvlc_media_player_get_length(p.player)), getError()
+	return int(C.dynamic_libvlc_media_player_get_length(p.player)), getError()
 }
 
 // MediaState returns the state of the current media.
@@ -452,7 +452,7 @@ func (p *Player) MediaState() (MediaState, error) {
 		return 0, err
 	}
 
-	state := int(C.libvlc_media_player_get_state(p.player))
+	state := int(C.dynamic_libvlc_media_player_get_state(p.player))
 	return MediaState(state), getError()
 }
 
@@ -463,7 +463,7 @@ func (p *Player) MediaPosition() (float32, error) {
 		return 0, err
 	}
 
-	return float32(C.libvlc_media_player_get_position(p.player)), getError()
+	return float32(C.dynamic_libvlc_media_player_get_position(p.player)), getError()
 }
 
 // SetMediaPosition sets media position as percentage between 0.0 and 1.0.
@@ -473,7 +473,7 @@ func (p *Player) SetMediaPosition(pos float32, preferFastOrPrecise bool) error {
 		return err
 	}
 
-	C.libvlc_media_player_set_position(p.player, C.float(pos), C.bool(preferFastOrPrecise))
+	C.dynamic_libvlc_media_player_set_position(p.player, C.float(pos), C.bool(preferFastOrPrecise))
 	return getError()
 }
 
@@ -483,7 +483,7 @@ func (p *Player) MediaTime() (int, error) {
 		return 0, err
 	}
 
-	return int(C.libvlc_media_player_get_time(p.player)), getError()
+	return int(C.dynamic_libvlc_media_player_get_time(p.player)), getError()
 }
 
 // SetMediaTime sets the media time in milliseconds. Some formats and
@@ -493,7 +493,7 @@ func (p *Player) SetMediaTime(t int, preferFastOrPrecise bool) error {
 		return err
 	}
 
-	C.libvlc_media_player_set_time(p.player, C.libvlc_time_t(int64(t)), C.bool(preferFastOrPrecise))
+	C.dynamic_libvlc_media_player_set_time(p.player, C.libvlc_time_t(int64(t)), C.bool(preferFastOrPrecise))
 	return getError()
 }
 
@@ -503,7 +503,7 @@ func (p *Player) NextFrame() error {
 		return err
 	}
 
-	C.libvlc_media_player_next_frame(p.player)
+	C.dynamic_libvlc_media_player_next_frame(p.player)
 	return getError()
 }
 
@@ -514,7 +514,7 @@ func (p *Player) Scale() (float64, error) {
 		return 0, err
 	}
 
-	return float64(C.libvlc_video_get_scale(p.player)), getError()
+	return float64(C.dynamic_libvlc_video_get_scale(p.player)), getError()
 }
 
 // SetScale sets the scaling factor of the current video. The scaling factor
@@ -527,7 +527,7 @@ func (p *Player) SetScale(scale float64) error {
 		return err
 	}
 
-	C.libvlc_video_set_scale(p.player, C.float(scale))
+	C.dynamic_libvlc_video_set_scale(p.player, C.float(scale))
 	return getError()
 }
 
@@ -537,7 +537,7 @@ func (p *Player) AspectRatio() (string, error) {
 		return "", err
 	}
 
-	aspectRatio := C.libvlc_video_get_aspect_ratio(p.player)
+	aspectRatio := C.dynamic_libvlc_video_get_aspect_ratio(p.player)
 	if aspectRatio == nil {
 		return "", getError()
 	}
@@ -554,7 +554,7 @@ func (p *Player) SetAspectRatio(aspectRatio string) error {
 	}
 
 	cAspectRatio := C.CString(aspectRatio)
-	C.libvlc_video_set_aspect_ratio(p.player, cAspectRatio)
+	C.dynamic_libvlc_video_set_aspect_ratio(p.player, cAspectRatio)
 	C.free(unsafe.Pointer(cAspectRatio))
 	return getError()
 }
@@ -566,7 +566,7 @@ func (p *Player) AudioDelay() (time.Duration, error) {
 		return 0, err
 	}
 
-	delay := C.libvlc_audio_get_delay(p.player)
+	delay := C.dynamic_libvlc_audio_get_delay(p.player)
 	return time.Duration(delay) * time.Microsecond, getError()
 }
 
@@ -580,7 +580,7 @@ func (p *Player) SetAudioDelay(d time.Duration) error {
 		return err
 	}
 
-	if C.libvlc_audio_set_delay(p.player, C.int64_t(d.Microseconds())) != 0 {
+	if C.dynamic_libvlc_audio_set_delay(p.player, C.int64_t(d.Microseconds())) != 0 {
 		return errOrDefault(getError(), ErrMediaTrackNotFound)
 	}
 
@@ -594,7 +594,7 @@ func (p *Player) SubtitleDelay() (time.Duration, error) {
 		return 0, err
 	}
 
-	delay := C.libvlc_video_get_spu_delay(p.player)
+	delay := C.dynamic_libvlc_video_get_spu_delay(p.player)
 	return time.Duration(delay) * time.Microsecond, getError()
 }
 
@@ -608,7 +608,7 @@ func (p *Player) SetSubtitleDelay(d time.Duration) error {
 		return err
 	}
 
-	if C.libvlc_video_set_spu_delay(p.player, C.int64_t(d.Microseconds())) != 0 {
+	if C.dynamic_libvlc_video_set_spu_delay(p.player, C.int64_t(d.Microseconds())) != 0 {
 		return errOrDefault(getError(), ErrMediaTrackNotFound)
 	}
 
@@ -622,7 +622,7 @@ func (p *Player) VideoTrackCount() (int, error) {
 		return 0, err
 	}
 
-	count := int(C.libvlc_video_get_track_count(p.player))
+	count := int(C.dynamic_libvlc_video_get_track_count(p.player))
 	if count < 0 {
 		return 0, errOrDefault(getError(), ErrMediaNotInitialized)
 	}
@@ -637,7 +637,7 @@ func (p *Player) VideoTrackDescriptors() ([]*MediaTrackDescriptor, error) {
 		return nil, err
 	}
 
-	cDescriptors := C.libvlc_video_get_track_description(p.player)
+	cDescriptors := C.dynamic_libvlc_video_get_track_description(p.player)
 	return parseMediaTrackDescriptorList(cDescriptors)
 }
 
@@ -648,7 +648,7 @@ func (p *Player) VideoTrackID() (int, error) {
 		return 0, err
 	}
 
-	return int(C.libvlc_video_get_track(p.player)), nil
+	return int(C.dynamic_libvlc_video_get_track(p.player)), nil
 }
 
 // SetVideoTrack sets the track identified by the specified ID as the
@@ -658,7 +658,7 @@ func (p *Player) SetVideoTrack(trackID int) error {
 		return err
 	}
 
-	if C.libvlc_video_set_track(p.player, C.int(trackID)) != 0 {
+	if C.dynamic_libvlc_video_set_track(p.player, C.int(trackID)) != 0 {
 		return errOrDefault(getError(), ErrInvalidMediaTrack)
 	}
 
@@ -672,7 +672,7 @@ func (p *Player) AudioTrackCount() (int, error) {
 		return 0, err
 	}
 
-	count := int(C.libvlc_audio_get_track_count(p.player))
+	count := int(C.dynamic_libvlc_audio_get_track_count(p.player))
 	if count < 0 {
 		return 0, errOrDefault(getError(), ErrMediaNotInitialized)
 	}
@@ -687,7 +687,7 @@ func (p *Player) AudioTrackDescriptors() ([]*MediaTrackDescriptor, error) {
 		return nil, err
 	}
 
-	cDescriptors := C.libvlc_audio_get_track_description(p.player)
+	cDescriptors := C.dynamic_libvlc_audio_get_track_description(p.player)
 	return parseMediaTrackDescriptorList(cDescriptors)
 }
 
@@ -698,7 +698,7 @@ func (p *Player) AudioTrackID() (int, error) {
 		return 0, err
 	}
 
-	return int(C.libvlc_audio_get_track(p.player)), nil
+	return int(C.dynamic_libvlc_audio_get_track(p.player)), nil
 }
 
 // SetAudioTrack sets the track identified by the specified ID as the
@@ -708,7 +708,7 @@ func (p *Player) SetAudioTrack(trackID int) error {
 		return err
 	}
 
-	if C.libvlc_audio_set_track(p.player, C.int(trackID)) != 0 {
+	if C.dynamic_libvlc_audio_set_track(p.player, C.int(trackID)) != 0 {
 		return errOrDefault(getError(), ErrInvalidMediaTrack)
 	}
 
@@ -722,7 +722,7 @@ func (p *Player) SubtitleTrackCount() (int, error) {
 		return 0, err
 	}
 
-	count := int(C.libvlc_video_get_spu_count(p.player))
+	count := int(C.dynamic_libvlc_video_get_spu_count(p.player))
 	if count < 0 {
 		return 0, errOrDefault(getError(), ErrMediaNotInitialized)
 	}
@@ -737,7 +737,7 @@ func (p *Player) SubtitleTrackDescriptors() ([]*MediaTrackDescriptor, error) {
 		return nil, err
 	}
 
-	cDescriptors := C.libvlc_video_get_spu_description(p.player)
+	cDescriptors := C.dynamic_libvlc_video_get_spu_description(p.player)
 	return parseMediaTrackDescriptorList(cDescriptors)
 }
 
@@ -748,7 +748,7 @@ func (p *Player) SubtitleTrackID() (int, error) {
 		return 0, err
 	}
 
-	return int(C.libvlc_video_get_spu(p.player)), nil
+	return int(C.dynamic_libvlc_video_get_spu(p.player)), nil
 }
 
 // SetSubtitleTrack sets the track identified by the specified ID as the
@@ -758,7 +758,7 @@ func (p *Player) SetSubtitleTrack(trackID int) error {
 		return err
 	}
 
-	if C.libvlc_video_set_spu(p.player, C.int(trackID)) != 0 {
+	if C.dynamic_libvlc_video_set_spu(p.player, C.int(trackID)) != 0 {
 		return errOrDefault(getError(), ErrInvalidMediaTrack)
 	}
 
@@ -776,7 +776,7 @@ func (p *Player) SetRenderer(r *Renderer) error {
 		return err
 	}
 
-	if C.libvlc_media_player_set_renderer(p.player, r.renderer) < 0 {
+	if C.dynamic_libvlc_media_player_set_renderer(p.player, r.renderer) < 0 {
 		return errOrDefault(getError(), ErrPlayerSetRenderer)
 	}
 
@@ -795,7 +795,7 @@ func (p *Player) SetEqualizer(e *Equalizer) error {
 		e = &Equalizer{}
 	}
 
-	if C.libvlc_media_player_set_equalizer(p.player, e.equalizer) != 0 {
+	if C.dynamic_libvlc_media_player_set_equalizer(p.player, e.equalizer) != 0 {
 		return errOrDefault(getError(), ErrPlayerSetEqualizer)
 	}
 
@@ -808,7 +808,7 @@ func (p *Player) Role() (PlayerRole, error) {
 		return 0, err
 	}
 
-	role := C.libvlc_media_player_get_role(p.player)
+	role := C.dynamic_libvlc_media_player_get_role(p.player)
 	if role < 0 {
 		return 0, errOrDefault(getError(), ErrPlayerInvalidRole)
 	}
@@ -822,7 +822,7 @@ func (p *Player) SetRole(role PlayerRole) error {
 		return err
 	}
 
-	if C.libvlc_media_player_set_role(p.player, C.uint(role)) != 0 {
+	if C.dynamic_libvlc_media_player_set_role(p.player, C.uint(role)) != 0 {
 		return errOrDefault(getError(), ErrPlayerInvalidRole)
 	}
 
@@ -839,7 +839,7 @@ func (p *Player) VideoDimensions() (uint, uint, error) {
 	}
 
 	var w, h C.uint
-	if C.libvlc_video_get_size(p.player, 0, &w, &h) != 0 {
+	if C.dynamic_libvlc_video_get_size(p.player, 0, &w, &h) != 0 {
 		return 0, 0, errOrDefault(getError(), ErrMissingMediaDimensions)
 	}
 
@@ -860,7 +860,7 @@ func (p *Player) UpdateVideoViewpoint(vp *VideoViewpoint, absolute bool) error {
 	}
 
 	// Create new viewpoint.
-	cVp := C.libvlc_video_new_viewpoint()
+	cVp := C.dynamic_libvlc_video_new_viewpoint()
 	if cVp == nil {
 		return errOrDefault(getError(), ErrVideoViewpointSet)
 	}
@@ -873,7 +873,7 @@ func (p *Player) UpdateVideoViewpoint(vp *VideoViewpoint, absolute bool) error {
 	cVp.f_field_of_view = C.float(vp.FOV)
 
 	// Update viewpoint.
-	if C.libvlc_video_update_viewpoint(p.player, cVp, C.bool(absolute)) != 0 {
+	if C.dynamic_libvlc_video_update_viewpoint(p.player, cVp, C.bool(absolute)) != 0 {
 		return errOrDefault(getError(), ErrVideoViewpointSet)
 	}
 
@@ -895,7 +895,7 @@ func (p *Player) CursorPosition() (int, int, error) {
 	}
 
 	var x, y C.int
-	if C.libvlc_video_get_cursor(p.player, 0, &x, &y) != 0 {
+	if C.dynamic_libvlc_video_get_cursor(p.player, 0, &x, &y) != 0 {
 		return 0, 0, errOrDefault(getError(), ErrCursorPositionMissing)
 	}
 
@@ -917,7 +917,7 @@ func (p *Player) TakeSnapshot(outputPath string, width, height uint) error {
 	cOutputPath := C.CString(outputPath)
 	defer C.free(unsafe.Pointer(cOutputPath))
 
-	if C.libvlc_video_take_snapshot(p.player, 0, cOutputPath, C.uint(width), C.uint(height)) != 0 {
+	if C.dynamic_libvlc_video_take_snapshot(p.player, 0, cOutputPath, C.uint(width), C.uint(height)) != 0 {
 		return errOrDefault(getError(), ErrVideoSnapshot)
 	}
 
@@ -934,7 +934,7 @@ func (p *Player) XWindow() (uint32, error) {
 		return 0, err
 	}
 
-	return uint32(C.libvlc_media_player_get_xwindow(p.player)), getError()
+	return uint32(C.dynamic_libvlc_media_player_get_xwindow(p.player)), getError()
 }
 
 // SetXWindow sets an X Window System drawable where the media player can
@@ -951,7 +951,7 @@ func (p *Player) SetXWindow(windowID uint32) error {
 		return err
 	}
 
-	C.libvlc_media_player_set_xwindow(p.player, C.uint(windowID))
+	C.dynamic_libvlc_media_player_set_xwindow(p.player, C.long(windowID))
 	return getError()
 }
 
@@ -965,7 +965,7 @@ func (p *Player) HWND() (uintptr, error) {
 		return 0, err
 	}
 
-	return uintptr(C.libvlc_media_player_get_hwnd(p.player)), getError()
+	return uintptr(C.dynamic_libvlc_media_player_get_hwnd(p.player)), getError()
 }
 
 // SetHWND sets a Windows API window handle where the media player can render
@@ -979,7 +979,7 @@ func (p *Player) SetHWND(hwnd uintptr) error {
 		return err
 	}
 
-	C.libvlc_media_player_set_hwnd(p.player, unsafe.Pointer(hwnd))
+	C.dynamic_libvlc_media_player_set_hwnd(p.player, unsafe.Pointer(hwnd))
 	return getError()
 }
 
@@ -990,7 +990,7 @@ func (p *Player) NSObject() (uintptr, error) {
 		return 0, err
 	}
 
-	return uintptr(C.libvlc_media_player_get_nsobject(p.player)), getError()
+	return uintptr(C.dynamic_libvlc_media_player_get_nsobject(p.player)), getError()
 }
 
 // SetNSObject sets a NSObject handler where the media player can render
@@ -1005,7 +1005,7 @@ func (p *Player) SetNSObject(drawable uintptr) error {
 		return err
 	}
 
-	C.libvlc_media_player_set_nsobject(p.player, unsafe.Pointer(drawable))
+	C.dynamic_libvlc_media_player_set_nsobject(p.player, unsafe.Pointer(drawable))
 	return getError()
 }
 
@@ -1022,7 +1022,7 @@ func (p *Player) SetKeyInput(enable bool) error {
 		return err
 	}
 
-	C.libvlc_video_set_key_input(p.player, C.uint(boolToInt(enable)))
+	C.dynamic_libvlc_video_set_key_input(p.player, C.uint(boolToInt(enable)))
 	return getError()
 }
 
@@ -1039,7 +1039,7 @@ func (p *Player) SetMouseInput(enable bool) error {
 		return err
 	}
 
-	C.libvlc_video_set_mouse_input(p.player, C.uint(boolToInt(enable)))
+	C.dynamic_libvlc_video_set_mouse_input(p.player, C.uint(boolToInt(enable)))
 	return getError()
 }
 
@@ -1049,7 +1049,7 @@ func (p *Player) EventManager() (*EventManager, error) {
 		return nil, err
 	}
 
-	manager := C.libvlc_media_player_event_manager(p.player)
+	manager := C.dynamic_libvlc_media_player_event_manager(p.player)
 	if manager == nil {
 		return nil, ErrMissingEventManager
 	}
@@ -1079,7 +1079,7 @@ func (p *Player) setMedia(m *Media) error {
 		return err
 	}
 
-	C.libvlc_media_player_set_media(p.player, m.media)
+	C.dynamic_libvlc_media_player_set_media(p.player, m.media)
 	return getError()
 }
 

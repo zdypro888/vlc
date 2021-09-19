@@ -142,9 +142,9 @@ func (mt *MediaTrack) CodecDescription() (string, error) {
 	}
 
 	// Get codec description.
-	return C.GoString(C.libvlc_media_get_codec_description(
+	return C.GoString(C.dynamic_libvlc_media_get_codec_description(
 		C.libvlc_track_type_t(mt.Type),
-		C.uint(codec),
+		C.long(codec),
 	)), nil
 }
 
@@ -233,6 +233,6 @@ func parseMediaTrackDescriptorList(cDescriptors *C.libvlc_track_description_t) (
 		})
 	}
 
-	C.libvlc_track_description_list_release(cDescriptors)
+	C.dynamic_libvlc_track_description_list_release(cDescriptors)
 	return descriptors, getError()
 }

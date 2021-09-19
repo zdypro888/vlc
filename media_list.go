@@ -16,7 +16,7 @@ func NewMediaList() (*MediaList, error) {
 	}
 
 	var list *C.libvlc_media_list_t
-	if list = C.libvlc_media_list_new(); list == nil {
+	if list = C.dynamic_libvlc_media_list_new(); list == nil {
 		return nil, errOrDefault(getError(), ErrMediaListCreate)
 	}
 
@@ -29,7 +29,7 @@ func (ml *MediaList) Release() error {
 		return nil
 	}
 
-	C.libvlc_media_list_release(ml.list)
+	C.dynamic_libvlc_media_list_release(ml.list)
 	ml.list = nil
 
 	return getError()
@@ -46,7 +46,7 @@ func (ml *MediaList) AddMedia(m *Media) error {
 	}
 
 	// Add the media to the list.
-	C.libvlc_media_list_add_media(ml.list, m.media)
+	C.dynamic_libvlc_media_list_add_media(ml.list, m.media)
 
 	if err := ml.Unlock(); err != nil {
 		return err
@@ -115,7 +115,7 @@ func (ml *MediaList) InsertMedia(m *Media, index uint) error {
 	}
 
 	// Insert the media in the list.
-	C.libvlc_media_list_insert_media(ml.list, m.media, C.int(index))
+	C.dynamic_libvlc_media_list_insert_media(ml.list, m.media, C.int(index))
 
 	if err := ml.Unlock(); err != nil {
 		return err
@@ -180,7 +180,7 @@ func (ml *MediaList) RemoveMediaAtIndex(index uint) error {
 	}
 
 	// Remove the media from the list.
-	C.libvlc_media_list_remove_index(ml.list, C.int(index))
+	C.dynamic_libvlc_media_list_remove_index(ml.list, C.int(index))
 
 	if err := ml.Unlock(); err != nil {
 		return err
@@ -196,14 +196,14 @@ func (ml *MediaList) MediaAtIndex(index uint) (*Media, error) {
 	}
 
 	// Retrieve the media at the specified index.
-	media := C.libvlc_media_list_item_at_index(ml.list, C.int(index))
+	media := C.dynamic_libvlc_media_list_item_at_index(ml.list, C.int(index))
 	if media == nil {
 		return nil, getError()
 	}
 
 	// This call will not release the media. Instead, it will decrement
 	// the reference count increased by libvlc_media_list_item_at_index.
-	C.libvlc_media_release(media)
+	C.dynamic_libvlc_media_release(media)
 
 	if err := ml.Unlock(); err != nil {
 		return nil, err
@@ -225,7 +225,7 @@ func (ml *MediaList) IndexOfMedia(m *Media) (int, error) {
 	}
 
 	// Retrieve the index of the media.
-	idx := int(C.libvlc_media_list_index_of_item(ml.list, m.media))
+	idx := int(C.dynamic_libvlc_media_list_index_of_item(ml.list, m.media))
 	if idx < 0 {
 		return 0, errOrDefault(getError(), ErrMediaNotFound)
 	}
@@ -244,7 +244,7 @@ func (ml *MediaList) Count() (int, error) {
 	}
 
 	// Retrieve media count.
-	count := int(C.libvlc_media_list_count(ml.list))
+	count := int(C.dynamic_libvlc_media_list_count(ml.list))
 
 	if err := ml.Unlock(); err != nil {
 		return 0, err
@@ -259,7 +259,7 @@ func (ml *MediaList) IsReadOnly() (bool, error) {
 		return false, err
 	}
 
-	return bool(C.libvlc_media_list_is_readonly(ml.list)), getError()
+	return bool(C.dynamic_libvlc_media_list_is_readonly(ml.list)), getError()
 }
 
 // AssociatedMedia returns the media instance associated with the list,
@@ -271,14 +271,14 @@ func (ml *MediaList) AssociatedMedia() (*Media, error) {
 		return nil, err
 	}
 
-	media := C.libvlc_media_list_media(ml.list)
+	media := C.dynamic_libvlc_media_list_media(ml.list)
 	if media == nil {
 		return nil, errOrDefault(getError(), ErrMediaNotFound)
 	}
 
 	// This call will not release the media. Instead, it will decrement
 	// the reference count increased by libvlc_media_list_media.
-	C.libvlc_media_release(media)
+	C.dynamic_libvlc_media_release(media)
 
 	return &Media{media: media}, nil
 }
@@ -294,7 +294,7 @@ func (ml *MediaList) AssociateMedia(m *Media) error {
 		return err
 	}
 
-	C.libvlc_media_list_set_media(ml.list, m.media)
+	C.dynamic_libvlc_media_list_set_media(ml.list, m.media)
 	return nil
 }
 
@@ -304,7 +304,7 @@ func (ml *MediaList) Lock() error {
 		return err
 	}
 
-	C.libvlc_media_list_lock(ml.list)
+	C.dynamic_libvlc_media_list_lock(ml.list)
 	return getError()
 }
 
@@ -314,7 +314,7 @@ func (ml *MediaList) Unlock() error {
 		return err
 	}
 
-	C.libvlc_media_list_unlock(ml.list)
+	C.dynamic_libvlc_media_list_unlock(ml.list)
 	return getError()
 }
 
@@ -324,7 +324,7 @@ func (ml *MediaList) EventManager() (*EventManager, error) {
 		return nil, err
 	}
 
-	manager := C.libvlc_media_list_event_manager(ml.list)
+	manager := C.dynamic_libvlc_media_list_event_manager(ml.list)
 	if manager == nil {
 		return nil, ErrMissingEventManager
 	}

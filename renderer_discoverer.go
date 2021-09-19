@@ -33,11 +33,11 @@ func ListRendererDiscoverers() ([]*RendererDiscovererDescriptor, error) {
 	// Get renderer discoverer descriptors.
 	var cDescriptors **C.libvlc_rd_description_t
 
-	count := int(C.libvlc_renderer_discoverer_list_get(inst.handle, &cDescriptors))
+	count := int(C.dynamic_libvlc_renderer_discoverer_list_get(inst.handle, &cDescriptors))
 	if count <= 0 || cDescriptors == nil {
 		return nil, nil
 	}
-	defer C.libvlc_renderer_discoverer_list_release(cDescriptors, C.size_t(count))
+	defer C.dynamic_libvlc_renderer_discoverer_list_release(cDescriptors, C.size_t(count))
 
 	// Parse renderer discoverer descriptors.
 	descriptors := make([]*RendererDiscovererDescriptor, 0, count)
@@ -86,7 +86,7 @@ func NewRendererDiscoverer(name string) (*RendererDiscoverer, error) {
 	cName := C.CString(name)
 	defer C.free(unsafe.Pointer(cName))
 
-	discoverer := C.libvlc_renderer_discoverer_new(inst.handle, cName)
+	discoverer := C.dynamic_libvlc_renderer_discoverer_new(inst.handle, cName)
 	if discoverer == nil {
 		return nil, errOrDefault(getError(), ErrRendererDiscovererCreate)
 	}
@@ -114,7 +114,7 @@ func (rd *RendererDiscoverer) Release() error {
 	rd.renderers = nil
 
 	// Release discovery service.
-	C.libvlc_renderer_discoverer_release(rd.discoverer)
+	C.dynamic_libvlc_renderer_discoverer_release(rd.discoverer)
 	rd.discoverer = nil
 
 	return getError()
@@ -192,7 +192,7 @@ func (rd *RendererDiscoverer) Start(cb RendererDiscoveryCallback) error {
 	}()
 
 	// Start discovery service.
-	if C.libvlc_renderer_discoverer_start(rd.discoverer) < 0 {
+	if C.dynamic_libvlc_renderer_discoverer_start(rd.discoverer) < 0 {
 		return errOrDefault(getError(), ErrRendererDiscovererStart)
 	}
 
@@ -201,7 +201,7 @@ func (rd *RendererDiscoverer) Start(cb RendererDiscoveryCallback) error {
 		manager.Detach(eventIDs...)
 
 		// Stop discovery service.
-		C.libvlc_renderer_discoverer_stop(rd.discoverer)
+		C.dynamic_libvlc_renderer_discoverer_stop(rd.discoverer)
 	}
 
 	return nil
@@ -231,7 +231,7 @@ func (rd *RendererDiscoverer) eventManager() (*EventManager, error) {
 		return nil, err
 	}
 
-	manager := C.libvlc_renderer_discoverer_event_manager(rd.discoverer)
+	manager := C.dynamic_libvlc_renderer_discoverer_event_manager(rd.discoverer)
 	if manager == nil {
 		return nil, ErrMissingEventManager
 	}
