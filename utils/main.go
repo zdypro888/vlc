@@ -270,10 +270,11 @@ func main() {
 			if err != nil {
 				return err
 			}
+			filesource := string(filedata)
 			for name := range names {
-				ioutil.WriteFile(path, []byte(strings.ReplaceAll(string(filedata), fmt.Sprintf("C.%s", name), "")), 0644)
+				filesource = strings.ReplaceAll(filesource, fmt.Sprintf("C.%s", name), fmt.Sprintf("C.dynamic_%s", name))
 			}
-
+			ioutil.WriteFile(path, []byte(filesource), 0644)
 		}
 		return nil
 	})
