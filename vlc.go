@@ -1,13 +1,14 @@
 package vlc
 
 /*
-#cgo LDFLAGS: -L${SRCDIR}/lib -lvlc -ldl
+#cgo LDFLAGS: -ldl
 #cgo CFLAGS: -Wno-deprecated-declarations
 #include "dynamic.h"
 #include <stdlib.h>
 */
 import "C"
 import (
+	"fmt"
 	"unsafe"
 )
 
@@ -29,9 +30,12 @@ var inst *instance
 // Init creates an instance of the libVLC module.
 // Must be called only once and the module instance must be released using
 // the Release function.
-func Init(args ...string) error {
+func Init(vlcpath string, args ...string) error {
 	if inst != nil {
 		return nil
+	}
+	if !bool(C.dynamic_load(C.CString(vlcpath))) {
+		return fmt.Errorf("can not load: %s", vlcpath)
 	}
 	argc := len(args)
 	argv := make([]*C.char, argc)
