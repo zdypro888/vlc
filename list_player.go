@@ -2,7 +2,7 @@
 
 package vlc
 
-// #include <vlc/vlc.h>
+// #include "dynamic.h"
 // #include <stdlib.h>
 import "C"
 

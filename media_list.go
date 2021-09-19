@@ -1,6 +1,6 @@
 package vlc
 
-// #include <vlc/vlc.h>
+// #include "dynamic.h"
 import "C"
 import "io"
 

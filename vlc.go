@@ -1,9 +1,11 @@
 package vlc
 
-// #cgo LDFLAGS: -L${SRCDIR}/lib -lvlc
-// #cgo CFLAGS: -Wno-deprecated-declarations
-// #include <vlc/vlc.h>
-// #include <stdlib.h>
+/*
+#cgo LDFLAGS: -L${SRCDIR}/lib -lvlc -ldl
+#cgo CFLAGS: -Wno-deprecated-declarations
+#include "dynamic.h"
+#include <stdlib.h>
+*/
 import "C"
 import (
 	"unsafe"
@@ -19,7 +21,6 @@ func (i *instance) assertInit() error {
 	if i == nil || i.handle == nil {
 		return ErrModuleNotInitialized
 	}
-
 	return nil
 }
 
@@ -32,7 +33,6 @@ func Init(args ...string) error {
 	if inst != nil {
 		return nil
 	}
-
 	argc := len(args)
 	argv := make([]*C.char, argc)
 

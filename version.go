@@ -1,6 +1,6 @@
 package vlc
 
-// #include <vlc/vlc.h>
+// #include "dynamic.h"
 // #include <vlc/libvlc_version.h>
 import "C"
 import "fmt"

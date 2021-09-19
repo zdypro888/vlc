@@ -1,7 +1,7 @@
 package vlc
 
 /*
-#include <vlc/vlc.h>
+#include "dynamic.h"
 
 extern void eventDispatch(libvlc_event_t*, void*);
 

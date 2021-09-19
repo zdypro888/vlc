@@ -1,6 +1,6 @@
 package vlc
 
-// #include <vlc/vlc.h>
+// #include "dynamic.h"
 import "C"
 
 // RendererType represents the type of a renderer.
