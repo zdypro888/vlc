@@ -1778,6 +1778,7 @@ bool dynamic_load(const char *path)
     void *handle = dlopen(path, RTLD_LAZY);
     if (handle == NULL)
         return false;
+    char * error;
     _libvlc_video_set_crop_window = (p_libvlc_video_set_crop_window)dlsym(handle, "libvlc_video_set_crop_window");
     _libvlc_media_list_retain = (p_libvlc_media_list_retain)dlsym(handle, "libvlc_media_list_retain");
     _libvlc_audio_set_volume_callback = (p_libvlc_audio_set_volume_callback)dlsym(handle, "libvlc_audio_set_volume_callback");
@@ -1801,7 +1802,11 @@ bool dynamic_load(const char *path)
     _libvlc_media_list_player_play_item = (p_libvlc_media_list_player_play_item)dlsym(handle, "libvlc_media_list_player_play_item");
     _libvlc_dialog_post_action = (p_libvlc_dialog_post_action)dlsym(handle, "libvlc_dialog_post_action");
     _libvlc_media_player_get_full_title_descriptions = (p_libvlc_media_player_get_full_title_descriptions)dlsym(handle, "libvlc_media_player_get_full_title_descriptions");
+    
+    dlerror();
     _libvlc_media_player_stop_async = (p_libvlc_media_player_stop_async)dlsym(handle, "libvlc_media_player_stop_async");
+    if((error = dlerror()) != NULL) _libvlc_media_player_stop_async = (p_libvlc_media_player_stop_async)dlsym(handle, "libvlc_media_player_stop");
+
     _libvlc_player_programlist_delete = (p_libvlc_player_programlist_delete)dlsym(handle, "libvlc_player_programlist_delete");
     _libvlc_audio_equalizer_get_band_count = (p_libvlc_audio_equalizer_get_band_count)dlsym(handle, "libvlc_audio_equalizer_get_band_count");
     _libvlc_video_set_adjust_int = (p_libvlc_video_set_adjust_int)dlsym(handle, "libvlc_video_set_adjust_int");
@@ -1879,7 +1884,11 @@ bool dynamic_load(const char *path)
     _libvlc_event_attach = (p_libvlc_event_attach)dlsym(handle, "libvlc_event_attach");
     _libvlc_renderer_discoverer_list_get = (p_libvlc_renderer_discoverer_list_get)dlsym(handle, "libvlc_renderer_discoverer_list_get");
     _libvlc_media_player_set_pause = (p_libvlc_media_player_set_pause)dlsym(handle, "libvlc_media_player_set_pause");
+
+    dlerror();
     _libvlc_media_list_player_stop_async = (p_libvlc_media_list_player_stop_async)dlsym(handle, "libvlc_media_list_player_stop_async");
+    if((error = dlerror()) != NULL) _libvlc_media_list_player_stop_async = (p_libvlc_media_list_player_stop_async)dlsym(handle, "libvlc_media_list_player_stop");
+
     _libvlc_video_new_viewpoint = (p_libvlc_video_new_viewpoint)dlsym(handle, "libvlc_video_new_viewpoint");
     _libvlc_video_set_output_callbacks = (p_libvlc_video_set_output_callbacks)dlsym(handle, "libvlc_video_set_output_callbacks");
     _libvlc_media_new_path = (p_libvlc_media_new_path)dlsym(handle, "libvlc_media_new_path");
@@ -2000,7 +2009,11 @@ bool dynamic_load(const char *path)
     _libvlc_media_list_set_media = (p_libvlc_media_list_set_media)dlsym(handle, "libvlc_media_list_set_media");
     _libvlc_media_list_media = (p_libvlc_media_list_media)dlsym(handle, "libvlc_media_list_media");
     _libvlc_media_tracks_get = (p_libvlc_media_tracks_get)dlsym(handle, "libvlc_media_tracks_get");
+    
+    dlerror();
     _libvlc_media_parse_async = (p_libvlc_media_parse_async)dlsym(handle, "libvlc_media_parse_async");
+    if((error = dlerror()) != NULL) _libvlc_media_parse_async = (p_libvlc_media_parse_async)dlsym(handle, "libvlc_media_parse");
+
     _libvlc_event_detach = (p_libvlc_event_detach)dlsym(handle, "libvlc_event_detach");
     _libvlc_video_get_size = (p_libvlc_video_get_size)dlsym(handle, "libvlc_video_get_size");
     _libvlc_media_discoverer_is_running = (p_libvlc_media_discoverer_is_running)dlsym(handle, "libvlc_media_discoverer_is_running");
