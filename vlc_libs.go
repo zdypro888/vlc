@@ -14,7 +14,7 @@ import (
 */
 import "C"
 
-func LoadLibrary(libs []string) error {
+func LoadLibrary(libs ...string) error {
 	for _, lib := range libs {
 		clib := C.CString(lib)
 		if dhandle := C.dlopen(clib, C.RTLD_LAZY); dhandle == nil {

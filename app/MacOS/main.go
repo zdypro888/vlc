@@ -64,7 +64,7 @@ func vlcPlay(args []string) {
 	// Initialize libVLC. Additional command line arguments can be passed in
 	// to libVLC by specifying them in the Init function.
 	args = append(args, "--verbose=4")
-	if err := vlc.LoadLibrary([]string{filepath.Join(folder, "lib", "libvlccore.dylib"), filepath.Join(folder, "lib", "libvlc.dylib")}); err != nil {
+	if err := vlc.LoadLibrary(filepath.Join(folder, "lib", "libvlccore.dylib"), filepath.Join(folder, "lib", "libvlc.dylib")); err != nil {
 		log.Fatal(err)
 	}
 	if err := vlc.Init(args...); err != nil {
