@@ -7,6 +7,13 @@ import (
 	"unsafe"
 )
 
+/*
+#cgo LDFLAGS: -ldl
+#include <stdlib.h>
+#include <dlfcn.h>
+*/
+import "C"
+
 func LoadLibrary(libs []string) error {
 	for _, lib := range libs {
 		clib := C.CString(lib)
