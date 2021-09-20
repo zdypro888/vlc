@@ -304,7 +304,7 @@ extern "C"
     unsigned char *dynamic_libvlc_picture_get_buffer(libvlc_picture_t *pic, size_t *size);
     void dynamic_libvlc_renderer_discoverer_release(libvlc_renderer_discoverer_t *p_rd);
 
-    bool dynamic_load(const char *path);
+    const char * dynamic_load();
 #ifdef __cplusplus
 }
 #endif

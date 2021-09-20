@@ -5,6 +5,7 @@ package vlc
 #cgo CFLAGS: -Wno-deprecated-declarations
 #include "dynamic.h"
 #include <stdlib.h>
+#include <dlfcn.h>
 */
 import "C"
 import (
@@ -30,12 +31,20 @@ var inst *instance
 // Init creates an instance of the libVLC module.
 // Must be called only once and the module instance must be released using
 // the Release function.
-func Init(vlcpath string, args ...string) error {
+func Init(libs []string, args ...string) error {
 	if inst != nil {
 		return nil
 	}
-	if !bool(C.dynamic_load(C.CString(vlcpath))) {
-		return fmt.Errorf("can not load: %s", vlcpath)
+	for _, lib := range libs {
+		clib := C.CString(lib)
+		if dhandle := C.dlopen(clib, C.RTLD_LAZY); dhandle == nil {
+			return fmt.Errorf("load: %s faild: %s", lib, C.GoString(C.dlerror()))
+		}
+		C.free(unsafe.Pointer(clib))
+	}
+	errchar := C.dynamic_load()
+	if errchar != nil {
+		return fmt.Errorf("can not load: %s", C.GoString(errchar))
 	}
 	argc := len(args)
 	argv := make([]*C.char, argc)
