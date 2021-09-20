@@ -93,6 +93,7 @@ typedef void (*p_libvlc_video_set_logo_string)(libvlc_media_player_t *, unsigned
 typedef float (*p_libvlc_video_get_spu_text_scale)(libvlc_media_player_t *);
 typedef void (*p_libvlc_media_list_player_retain)(libvlc_media_list_player_t *);
 typedef void (*p_libvlc_playlist_play)(libvlc_instance_t *);
+typedef void (*p_libvlc_playlist_play_v3)(libvlc_instance_t *p_instance, int i_id, int i_options, char **ppsz_options);
 typedef void (*p_libvlc_media_list_player_pause)(libvlc_media_list_player_t *);
 typedef int (*p_libvlc_media_player_set_equalizer)(libvlc_media_player_t *, libvlc_equalizer_t *);
 typedef int (*p_libvlc_media_list_player_play_item_at_index)(libvlc_media_list_player_t *, int);
@@ -1167,6 +1168,9 @@ void dynamic_libvlc_playlist_play(libvlc_instance_t *p_instance)
 {
     return _libvlc_playlist_play(p_instance);
 }
+void dynamic_libvlc_playlist_play_v3(libvlc_instance_t *p_instance, int i_id, int i_options, char **ppsz_options){
+    return ((p_libvlc_playlist_play_v3)_libvlc_playlist_play)(p_instance, i_id, i_options, ppsz_options);
+}
 p_libvlc_video_set_mouse_input _libvlc_video_set_mouse_input;
 void dynamic_libvlc_video_set_mouse_input(libvlc_media_player_t *p_mi, unsigned on)
 {
@@ -2083,5 +2087,5 @@ const char * dynamic_load()
     _libvlc_get_changeset = (p_libvlc_get_changeset)dlsym(RTLD_DEFAULT, "libvlc_get_changeset");
     _libvlc_picture_get_buffer = (p_libvlc_picture_get_buffer)dlsym(RTLD_DEFAULT, "libvlc_picture_get_buffer");
     _libvlc_renderer_discoverer_release = (p_libvlc_renderer_discoverer_release)dlsym(RTLD_DEFAULT, "libvlc_renderer_discoverer_release");
-    return NULL;
+    return dlerror();
 }

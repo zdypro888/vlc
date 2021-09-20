@@ -14,3 +14,8 @@
 # Dependency directories (remove the comment below to include it)
 # vendor/
 .DS_Store
+
+app/Frameworks/*
+app/MacOS/share/*
+app/Resources/*
+app/MacOS/plugins/*

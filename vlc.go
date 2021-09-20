@@ -31,16 +31,9 @@ var inst *instance
 // Init creates an instance of the libVLC module.
 // Must be called only once and the module instance must be released using
 // the Release function.
-func Init(libs []string, args ...string) error {
+func Init(args ...string) error {
 	if inst != nil {
 		return nil
-	}
-	for _, lib := range libs {
-		clib := C.CString(lib)
-		if dhandle := C.dlopen(clib, C.RTLD_LAZY); dhandle == nil {
-			return fmt.Errorf("load: %s faild: %s", lib, C.GoString(C.dlerror()))
-		}
-		C.free(unsafe.Pointer(clib))
 	}
 	errchar := C.dynamic_load()
 	if errchar != nil {
@@ -133,6 +126,19 @@ func StartUserInterface(name string) error {
 	if C.dynamic_libvlc_add_intf(inst.handle, cName) < 0 {
 		return errOrDefault(getError(), ErrUserInterfaceStart)
 	}
+
+	return nil
+}
+
+// StartUserInterface attempts to start a user interface for the libVLC
+// instance. Pass an empty string as the name parameter in order to start
+// the default interface.
+func StartPlayPlaylist() error {
+	if err := inst.assertInit(); err != nil {
+		return err
+	}
+
+	C.dynamic_libvlc_playlist_play_v3(inst.handle, -1, 0, nil)
 
 	return nil
 }

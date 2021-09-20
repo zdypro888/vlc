@@ -100,6 +100,7 @@ extern "C"
     float dynamic_libvlc_video_get_spu_text_scale(libvlc_media_player_t *p_mi);
     void dynamic_libvlc_media_list_player_retain(libvlc_media_list_player_t *p_mlp);
     void dynamic_libvlc_playlist_play(libvlc_instance_t *p_instance);
+    void dynamic_libvlc_playlist_play_v3(libvlc_instance_t *p_instance, int i_id, int i_options, char **ppsz_options);
     void dynamic_libvlc_media_list_player_pause(libvlc_media_list_player_t *p_mlp);
     int dynamic_libvlc_media_player_set_equalizer(libvlc_media_player_t *p_mi, libvlc_equalizer_t *p_equalizer);
     int dynamic_libvlc_media_list_player_play_item_at_index(libvlc_media_list_player_t *p_mlp, int i_index);
